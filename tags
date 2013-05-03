@@ -1,0 +1,24 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BIN	Makefile	/^	BIN=program$/;"	m
+CC	Makefile	/^CC=g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-Wall -std=c++11$/;"	m
+LDFLAGS	Makefile	/^LDFLAGS=$/;"	m
+OBJ	Makefile	/^OBJ=$(SRC:.cpp=.o)$/;"	m
+SRC	Makefile	/^SRC=main.cpp$/;"	m
+V2	main.cpp	/^	V2(double _x, double _y) { x = _x; y = _y;};$/;"	f	class:V2	access:public	signature:(double _x, double _y)
+V2	main.cpp	/^class V2 {$/;"	c	file:
+V2::V2	main.cpp	/^	V2(double _x, double _y) { x = _x; y = _y;};$/;"	f	class:V2	access:public	signature:(double _x, double _y)
+V2::x	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
+V2::y	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
+V2::~V2	main.cpp	/^	virtual ~V2 ();$/;"	p	class:V2	file:	access:public	implementation:virtual	signature:()
+diff	main.cpp	/^double diff(double x1,double x2, double y1,double y2) {return fabs(x1-x2) > fabs(y1-y2)?fabs(x1-x2):fabs(y1-y2);}$/;"	f	signature:(double x1,double x2, double y1,double y2)
+find_root	main.cpp	/^V2 find_root( vector<function<double(double,double)> > f,$/;"	f	signature:( vector<function<double(double,double)> > f, V2 p0)
+main	main.cpp	/^int main(int argc, const char *argv[])$/;"	f	signature:(int argc, const char *argv[])
+x	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
+y	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
+~V2	main.cpp	/^	virtual ~V2 ();$/;"	p	class:V2	file:	access:public	implementation:virtual	signature:()
