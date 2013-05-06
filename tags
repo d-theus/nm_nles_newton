@@ -7,18 +7,29 @@
 BIN	Makefile	/^	BIN=program$/;"	m
 CC	Makefile	/^CC=g++$/;"	m
 CFLAGS	Makefile	/^CFLAGS=-Wall -std=c++11$/;"	m
+F2	main.cpp	/^typedef vector<function<double(V2)> > F2;$/;"	t	file:
+Jacob	main.cpp	/^MF2 Jacob(F2 f1, F2 f2){$/;"	f	signature:(F2 f1, F2 f2)
 LDFLAGS	Makefile	/^LDFLAGS=$/;"	m
+MF2	main.cpp	/^typedef vector<vector<function<double(V2)> > > MF2;$/;"	t	file:
 OBJ	Makefile	/^OBJ=$(SRC:.cpp=.o)$/;"	m
 SRC	Makefile	/^SRC=main.cpp$/;"	m
-V2	main.cpp	/^	V2(double _x, double _y) { x = _x; y = _y;};$/;"	f	class:V2	access:public	signature:(double _x, double _y)
+V2	main.cpp	/^	V2(double _x=0, double _y=0) { x = _x; y = _y;};$/;"	f	class:V2	access:public	signature:(double _x=0, double _y=0)
 V2	main.cpp	/^class V2 {$/;"	c	file:
-V2::V2	main.cpp	/^	V2(double _x, double _y) { x = _x; y = _y;};$/;"	f	class:V2	access:public	signature:(double _x, double _y)
+V2::V2	main.cpp	/^	V2(double _x=0, double _y=0) { x = _x; y = _y;};$/;"	f	class:V2	access:public	signature:(double _x=0, double _y=0)
+V2::norm	main.cpp	/^	double norm(){return x*x + y*y;};$/;"	f	class:V2	access:public	signature:()
+V2::operator +	main.cpp	/^	V2 operator+ (V2 p2) {return V2(this->x + p2.x, this->y + p2.y);};$/;"	f	class:V2	access:public	signature:(V2 p2)
+V2::operator -	main.cpp	/^	V2 operator- () {return V2(-x,-y);};$/;"	f	class:V2	access:public	signature:()
+V2::operator -	main.cpp	/^	V2 operator- (V2 p2) {return *this +(-p2);};$/;"	f	class:V2	access:public	signature:(V2 p2)
 V2::x	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
 V2::y	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
-V2::~V2	main.cpp	/^	virtual ~V2 ();$/;"	p	class:V2	file:	access:public	implementation:virtual	signature:()
-diff	main.cpp	/^double diff(double x1,double x2, double y1,double y2) {return fabs(x1-x2) > fabs(y1-y2)?fabs(x1-x2):fabs(y1-y2);}$/;"	f	signature:(double x1,double x2, double y1,double y2)
-find_root	main.cpp	/^V2 find_root( vector<function<double(double,double)> > f,$/;"	f	signature:( vector<function<double(double,double)> > f, V2 p0)
+det	main.cpp	/^double det(const MF2 &m,const V2 &p){$/;"	f	signature:(const MF2 &m,const V2 &p)
+diff	main.cpp	/^double diff(V2 p1, V2 p2) {return fabs(p1.x-p2.x) > fabs(p1.y-p2.y)?fabs(p1.x-p2.x):fabs(p1.y-p2.y);}$/;"	f	signature:(V2 p1, V2 p2)
+find_root	main.cpp	/^V2 find_root(F2 f, MF2 J, V2 p0, double eps){$/;"	f	signature:(F2 f, MF2 J, V2 p0, double eps)
+grad	main.cpp	/^F2 grad(function<double(V2)> f){$/;"	f	signature:(function<double(V2)> f)
 main	main.cpp	/^int main(int argc, const char *argv[])$/;"	f	signature:(int argc, const char *argv[])
+norm	main.cpp	/^	double norm(){return x*x + y*y;};$/;"	f	class:V2	access:public	signature:()
+operator +	main.cpp	/^	V2 operator+ (V2 p2) {return V2(this->x + p2.x, this->y + p2.y);};$/;"	f	class:V2	access:public	signature:(V2 p2)
+operator -	main.cpp	/^	V2 operator- () {return V2(-x,-y);};$/;"	f	class:V2	access:public	signature:()
+operator -	main.cpp	/^	V2 operator- (V2 p2) {return *this +(-p2);};$/;"	f	class:V2	access:public	signature:(V2 p2)
 x	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
 y	main.cpp	/^	double x,y;$/;"	m	class:V2	file:	access:public
-~V2	main.cpp	/^	virtual ~V2 ();$/;"	p	class:V2	file:	access:public	implementation:virtual	signature:()
