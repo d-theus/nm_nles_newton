@@ -1,5 +1,10 @@
 program
 *.o
 *.swp
+<<<<<<< HEAD
 *.toc
 *.pdf
+=======
+*.dat
+tags
+>>>>>>> a69f811e6565baaf94af08e771a53748bad11bab
