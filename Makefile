@@ -11,3 +11,7 @@ $(BIN): $(OBJ)
 	$(CC) -c $(CFLAGS) $< -o $@
 launch:
 	./$(BIN)
+
+pdf:
+	pdflatex article.tex
+	rm *.log *.aux 2>/dev/null
