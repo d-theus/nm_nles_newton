@@ -18,7 +18,8 @@ F2 grad(function<double(V2)>);
 class V2 {
 public:
 	double x,y;
-	double norm()const{return sqrt(x*x + y*y);};
+	double norm_eu()const{return sqrt(x*x + y*y);};
+	double norm_max(){return fabs(x)>fabs(y) ? fabs(x) : fabs(y);};
 	V2(double _x=0, double _y=0) { x = _x; y = _y;};
 	V2 operator+ (V2 p2) {return V2(this->x + p2.x, this->y + p2.y);};
 	V2 operator- () {return V2(-x,-y);};
@@ -38,6 +39,15 @@ public:
 		this->f12 = f2;
 		this->f21 = f3;
 		this->f22 = f4;
+	}
+	function<double(V2)> Det(){
+		return [this](V2 arg){
+			return
+			(this->f11)(arg)*(this->f22)(arg) - (this->f12)(arg)*(this->f21)(arg);
+		};
+	}
+	double Det(V2 v){
+		return this->Det()(v);
 	}
 };
 
@@ -63,20 +73,16 @@ public:
 F2 grad(function<double(V2)> f){
 	F2 res(
 	[f](V2 x){
-		return (f(x+hx) - f(x))/hx.norm();
+		return (f(x+hx) - f(x))/hx.norm_eu();
 	},
 	[f](V2 x){
-		return (f(x+hy) - f(x))/hy.norm();
+		return (f(x+hy) - f(x))/hy.norm_eu();
 	});
 	return res;
 };
 
-double diff(V2 p1, V2 p2) {return fabs(p1.x-p2.x) > fabs(p1.y-p2.y)?fabs(p1.x-p2.x):fabs(p1.y-p2.y);}
-double det(const MF2 &m,const V2 &p){
-	return m.f11(p) * m.f22(p) - m.f12(p) * m.f21(p);
-}
-
-V2 gradient_descent(F2 f, V2 p0, double eps){
+template<class VecFun, class VecScal>
+V2 gradient_descent(VecFun f, VecScal p0, double eps){
 	function<double(V2)> phi = [f](V2 x){return f.f1(x)*f.f1(x) + f.f2(x)*f.f2(x);};
 	V2 p1 = p0;
 	double k = 4*eps;
@@ -92,12 +98,13 @@ V2 gradient_descent(F2 f, V2 p0, double eps){
 		if (phi(p1) <= phi(p0)) 
 			k /= 2;
 		ofs << p1.x << "\t" << p1.y << endl;
-	} while ((p0 - p1).norm() > eps);
+	} while ((p0 - p1).norm_max() > eps);
 	ofs.close();
 	cout << "Gradient descent part iteration count: " << i << endl;
 	return p1;
 }
-V2 find_root(F2 f, V2 p0, double eps){
+template<class VecFun, class VecScal>
+V2 find_root(VecFun f, VecScal p0, double eps){
 	V2 p1 = p0;
 	V2 dp(0,0);
 	MF2 J = f.jacobian();
@@ -117,10 +124,10 @@ V2 find_root(F2 f, V2 p0, double eps){
 	do{
 		i++;
 		p0 = p1;
-		p1.x = p0.x - det(A1,p0) / det (J, p0);
-		p1.y = p0.y - det(A2,p0) / det (J, p0);
+		p1.x = p0.x - A1.Det(p0) / J.Det(p0);
+		p1.y = p0.y - A2.Det(p0) / J.Det(p0);
 		ofs << p1.x << "\t" << p1.y << endl;
-	}while(diff(p0,p1) > eps);
+	}while((p0-p1).norm_max() > eps);
 	ofs.close();
 	cout << "Newton's part iteration count: " << i << endl;
 	return p1;
@@ -131,8 +138,8 @@ int main(int argc, const char *argv[])
 	F2 f;
 	f.f1 = [](V2 p) {return p.x*p.x + p.y*p.y -1 ;};
 	f.f2 = [](V2 p) {return p.y - p.x - 0.5 ;};
-	V2 p0 = gradient_descent(f, V2(1,1), 0.01);
-	V2 result = find_root(f,p0, 0.00001);
+	V2 p0 = gradient_descent<F2,V2>(f, V2(1,1), 0.01);
+	V2 result = find_root<F2,V2>(f,p0, 0.00001);
 	cout << result.x << ", " << result.y << endl;
 	return 0;
 }
