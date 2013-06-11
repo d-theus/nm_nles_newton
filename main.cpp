@@ -19,12 +19,13 @@ class V2 {
 public:
 	double x,y;
 	double norm_eu()const{return sqrt(x*x + y*y);};
-	double norm_max(){return fabs(x)>fabs(y) ? fabs(x) : fabs(y);};
+	double norm_max()const{return fabs(x)>fabs(y) ? fabs(x) : fabs(y);};
 	V2(double _x=0, double _y=0) { x = _x; y = _y;};
-	V2 operator+ (V2 p2) {return V2(this->x + p2.x, this->y + p2.y);};
-	V2 operator- () {return V2(-x,-y);};
-	V2 operator- (V2 p2) {return *this +(-p2);};
-	V2 operator* (double k){return V2(k*x, k*y);}
+	V2(const V2 &v){x = v.x; y = v.y;};
+	V2 operator+ (V2 p2)const {return V2(this->x + p2.x, this->y + p2.y);};
+	V2 operator- ()const {return V2(-x,-y);};
+	V2 operator- (V2 p2)const {return V2(*this) + (-p2);};
+	V2 operator* (double k)const{return V2(k*x, k*y);}
 };
 const V2 hx(10e-10,0);
 const V2 hy(0,10e-10);
@@ -70,7 +71,7 @@ public:
 	}
 	V2 operator()(V2 x){V2 res(f1(x),f2(x));return res;};
 };
-F2 grad(function<double(V2)> f){
+F2 grad(const function<double(V2)> f){
 	F2 res(
 	[f](V2 x){
 		return (f(x+hx) - f(x))/hx.norm_eu();
@@ -80,24 +81,41 @@ F2 grad(function<double(V2)> f){
 	});
 	return res;
 };
+double argmin(function<double(double)> f, double eps, double l, double r){
+	static double m1,m2;
+	while(fabs(r - l) > eps){
+		m1 = l + (r-l)/3;
+		m2 = r - (r-l)/3;
+		if(f(m1) > f(m2))
+			l = m2;
+		else 
+			r = m1;
+	}
+	return (r+l)/2;
+}
 
 template<class VecFun, class VecScal>
-V2 gradient_descent(VecFun f, VecScal p0, double eps){
+V2 gradient_descent(const VecFun f, VecScal p0, double eps){
 	function<double(V2)> phi = [f](V2 x){return f.f1(x)*f.f1(x) + f.f2(x)*f.f2(x);};
 	V2 p1 = p0;
-	double k = 4*eps;
 	int i = 0;
 
 	ofstream ofs;
 	ofs.open("xs.dat", ofstream::out);
 	ofs << p1.x << "\t" << p1.y << endl;
+	double k;
 	do {
-		++i;
 		p0 = p1;
+		k = argmin(
+				[phi,p0](double a){return phi(p0 - phi(p0) * a);},
+				eps,
+				10e-8,
+				1 / (grad(phi)(p0)).norm_eu()
+			  );
+		++i;
 		p1 = p0 - grad(phi)(p0)*k;
-		if (phi(p1) <= phi(p0)) 
-			k /= 2;
 		ofs << p1.x << "\t" << p1.y << endl;
+		cout << p1.x << p1.y << endl;
 	} while ((p0 - p1).norm_max() > eps);
 	ofs.close();
 	cout << "Gradient descent part iteration count: " << i << endl;
@@ -127,6 +145,7 @@ V2 find_root(VecFun f, VecScal p0, double eps){
 		p1.x = p0.x - A1.Det(p0) / J.Det(p0);
 		p1.y = p0.y - A2.Det(p0) / J.Det(p0);
 		ofs << p1.x << "\t" << p1.y << endl;
+		cout << p1.x << p1.y << endl;
 	}while((p0-p1).norm_max() > eps);
 	ofs.close();
 	cout << "Newton's part iteration count: " << i << endl;
