@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{cite}
 %}}}
 \lstset{ %
 language=C++,                % choose the language of the code
@@ -25,6 +26,7 @@ breaklines=true,        % sets automatic line breaking
 breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
 escapeinside={\%*}{*)}          % if you want to add a comment within your code
 }
+\bibliographystyle{unsrt}
 \newcommand{\argmin}{\mathop{\rm arg~min}\limits}
 \begin{document}
 \section*{Титульный лист потерялся}
@@ -32,6 +34,10 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \tableofcontents
 \newpage
 \section*{Задание}
+\textbf{Решение системы нелинейных уравнений с помощью сочетания
+метода наискорейшего спуска и метода Ньютона.}\\
+Оценить скорость сходимости метода. На начальном этапе применить
+метод наискорейшего спуска, на завершающем – метод Ньютона.
 \newpage
 \section*{Введение}
 \addcontentsline{toc}{section}{Введение}
@@ -94,18 +100,6 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \end{equation*}
 
 \subsection*{Метод Ньютона}
-%Пусть $A_k$ --- некоторая последовательность невырожденных вещественных $n \times n$-матриц. Тогда, очевидно, последовательность задач
-%\begin{equation}
-	%x = x - A_k F(x), k=0,1,2,\ldots
-%\end{equation}
-%имеет те же решения, что и исходная система. Для приближенного нахождения этих решений можно формально 
-%записать итерационный процесс 
-%\begin{equation}
-	%x^{(k+1)} = x^{(k)} - A_k F(x^{(k)}), k=0,1,2,\ldots
-%\end{equation}
-%\begin{equation}
-	%x^{(k+1)} = x^{(k)} + [F'(x^{(k)})]^{-1} F(x^{(k)})
-%\end{equation}
 Если определено начальное приближение $x^{(0)}$, итерационный процесс нахождения решения системы методом Ньютона можно представить в виде 
 \begin{equation}
 	x^{(k+1)} = x^{(k)} + \Delta x^{(k)}\text{,}
@@ -144,7 +138,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 При реализации алгоритма метода Ньютона в большинстве случаев предпочтительным является не вычисление обратной матрицы Якоби, а нахождение 
 из системы (4) значений приращений $\Delta x^{(k)}$ и вычисление нового приближения по (3).\\
 Использование метода Ньютона предполагает дифференцируемость функций $f_1(x),\ldots ,f_n(x)$ и невырожденность матрицы Якоби. В случае, если 
-начальное приближение выбрано в достаточно малой окрестности искомого корня, итерации сходятся к точному решению, причем сходимость квадратичная.\\
+начальное приближение выбрано в достаточно малой окрестности искомого корня, итерации сходятся к точному решению, причем сходимость квадратичная(если только якобиан в точке решения не равен или близок к нулю).\\
 В практических вычислениях в качестве условия окончания итераций обычно используется критерий 
 \begin{equation}
 	|| x^{(k+1)} - x^{(k)} || \leq \epsilon \text{,}
@@ -175,7 +169,16 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 \newpage
 \section*{Заключение}
 \addcontentsline{toc}{section}{Заключение}
+В результате выполнения работы были достигнуты следующие результаты:\\
+\begin{itemize}
+	\item Написана программа, решающая системы нелинейных уравнений различной размерности, в пространствах с разными определениями норм.
+\end{itemize}
 \newpage
-\section*{Литература}
-\addcontentsline{toc}{section}{Литература}
+\addcontentsline{toc}{section}{Список литературы}
+\nocite{nm_verg_a}
+\nocite{nm_verg_m}
+\nocite{RH}
+\nocite{RS}
+\bibliography{article}
+
 \end{document}

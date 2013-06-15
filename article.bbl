@@ -1,0 +1,26 @@
+\begin{thebibliography}{1}
+
+\bibitem{nm_verg_a}
+Вержбицкий~В. М.
+\newblock {\em Численные методы (Линейная алгебра
+  и нелинейные уравнения). Учебное пособие
+  для ВУЗов}.
+\newblock 2000.
+
+\bibitem{nm_verg_m}
+Вержбицкий~В. М.
+\newblock {\em Численные методы (Математический
+  анализ). Учебное пособие для ВУЗов}.
+\newblock 2000.
+
+\bibitem{RH}
+Richard Hamming.
+\newblock {\em Numerical methods for scientists and engineers}.
+\newblock 1987.
+
+\bibitem{RS}
+Robert Sedgewick.
+\newblock {\em Algorithms, 4th ed.}
+\newblock 2011.
+
+\end{thebibliography}
