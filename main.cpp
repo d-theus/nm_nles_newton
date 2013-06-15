@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include<fstream>
+#include<unistd.h>
 
 using std::function;
 using std::vector;
@@ -95,7 +96,7 @@ double argmin(function<double(double)> f, double eps, double l, double r){
 }
 
 template<class VecFun, class VecScal>
-V2 gradient_descent(const VecFun f, VecScal p0, double eps){
+V2 gradient_descent(const VecFun f, VecScal p0, double eps, size_t maxItCount){
 	function<double(V2)> phi = [f](V2 x){return f.f1(x)*f.f1(x) + f.f2(x)*f.f2(x);};
 	V2 p1 = p0;
 	int i = 0;
@@ -116,9 +117,12 @@ V2 gradient_descent(const VecFun f, VecScal p0, double eps){
 		p1 = p0 - grad(phi)(p0)*k;
 		ofs << p1.x << "\t" << p1.y << endl;
 		cout << p1.x << p1.y << endl;
+		if (i > maxItCount){
+			cout << "Algorithm does not converge" << endl;
+			break;
+		}
 	} while ((p0 - p1).norm_max() > eps);
 	ofs.close();
-	cout << "Gradient descent part iteration count: " << i << endl;
 	return p1;
 }
 template<class VecFun, class VecScal>
@@ -148,7 +152,6 @@ V2 find_root(VecFun f, VecScal p0, double eps){
 		cout << p1.x << p1.y << endl;
 	}while((p0-p1).norm_max() > eps);
 	ofs.close();
-	cout << "Newton's part iteration count: " << i << endl;
 	return p1;
 }
 
@@ -157,8 +160,34 @@ int main(int argc, const char *argv[])
 	F2 f;
 	f.f1 = [](V2 p) {return p.x*p.x + p.y*p.y -1 ;};
 	f.f2 = [](V2 p) {return p.y - p.x - 0.5 ;};
-	V2 p0 = gradient_descent<F2,V2>(f, V2(1,1), 0.01);
-	V2 result = find_root<F2,V2>(f,p0, 0.00001);
-	cout << result.x << ", " << result.y << endl;
+	ofstream of("p0stats.dat");
+	double x=-0.1,y=0.5;
+	for (;x<0.8;x+=0.1){
+		cout << "x = " << x << endl;
+		for (;y<1.2;y+=0.1) {
+			V2 p00(x,y);
+			V2 p0 = gradient_descent<F2,V2>(f, p00 , 0.01, 1000);
+			V2 result = find_root<F2,V2>(f,p0, 0.00001);
+			cout << result.x << ", " << result.y << endl;
+			of << endl << x << "\t" << y << "\t" << 0 << "\t" << 0 << "\t" << 0 << "\t" << endl;
+			of.close();
+			system("wc -l xs.dat | awk '{print $1}' >> p0stats.dat");
+			of.open("p0stats.dat",std::ostream::app);
+			}
+		y = 0.5;
+	}
+	of.close();
+	double eps = 10e-02;
+	V2 p00(0.5,0.8);
+	ofstream ofe("epsstats.dat");
+	for(;eps > 10e-07;eps /= 10){
+		V2 p0 = gradient_descent<F2,V2>(f, p00 , eps, 1000);
+		V2 result = find_root<F2,V2>(f,p0, eps/100);
+		ofe << eps << endl;
+		ofe.close();
+		system("wc -l xs.dat | awk '{print $1}' >> epsstats.dat");
+		ofe.open("epsstats.dat",std::ostream::app);
+	}
+	ofe.close();
 	return 0;
 }
