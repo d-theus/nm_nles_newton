@@ -3,49 +3,50 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: article.aux
 The style file: unsrt.bst
 Database file #1: article.bib
+Warning--empty publisher in BH
 Warning--empty publisher in nm_verg_a
 Warning--empty publisher in nm_verg_m
 Warning--empty publisher in RH
 Warning--empty publisher in RS
-You've used 4 entries,
+You've used 5 entries,
             1791 wiz_defined-function locations,
-            459 strings with 3948 characters,
-and the built_in function-call counts, 608 in all, are:
-= -- 44
-> -- 16
+            464 strings with 4064 characters,
+and the built_in function-call counts, 755 in all, are:
+= -- 55
+> -- 20
 < -- 0
-+ -- 8
-- -- 4
-* -- 22
-:= -- 97
-add.period$ -- 12
-call.type$ -- 4
++ -- 10
+- -- 5
+* -- 27
+:= -- 119
+add.period$ -- 15
+call.type$ -- 5
 change.case$ -- 0
 chr.to.int$ -- 0
-cite$ -- 8
-duplicate$ -- 40
-empty$ -- 77
-format.name$ -- 4
-if$ -- 137
+cite$ -- 10
+duplicate$ -- 50
+empty$ -- 96
+format.name$ -- 5
+if$ -- 171
 int.to.chr$ -- 0
-int.to.str$ -- 4
-missing$ -- 8
-newline$ -- 23
-num.names$ -- 4
-pop$ -- 32
+int.to.str$ -- 5
+missing$ -- 10
+newline$ -- 28
+num.names$ -- 5
+pop$ -- 40
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 8
+skip$ -- 10
 stack$ -- 0
 substring$ -- 0
-swap$ -- 4
+swap$ -- 5
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 4
-while$ -- 4
-width$ -- 5
-write$ -- 38
-(There were 4 warnings)
+warning$ -- 5
+while$ -- 5
+width$ -- 6
+write$ -- 47
+(There were 5 warnings)
