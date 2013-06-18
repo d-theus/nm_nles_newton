@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include<fstream>
+#include<limits>
 #include<unistd.h>
 
 using std::function;
@@ -10,6 +11,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 using std::ofstream;
+using std::numeric_limits;
 
 class MF2;
 class F2;
@@ -96,7 +98,7 @@ double argmin(function<double(double)> f, double eps, double l, double r){
 }
 
 template<class VecFun, class VecScal>
-V2 gradient_descent(const VecFun f, VecScal p0, double eps, size_t maxItCount){
+V2 gradient_descent(const VecFun f, VecScal p0, double eps,VecScal app_result, double radius, size_t maxItCount){
 	function<double(V2)> phi = [f](V2 x){return f.f1(x)*f.f1(x) + f.f2(x)*f.f2(x);};
 	V2 p1 = p0;
 	int i = 0;
@@ -116,9 +118,11 @@ V2 gradient_descent(const VecFun f, VecScal p0, double eps, size_t maxItCount){
 		++i;
 		p1 = p0 - grad(phi)(p0)*k;
 		ofs << p1.x << "\t" << p1.y << endl;
-		cout << p1.x << p1.y << endl;
-		if (i > maxItCount){
+		if (i > maxItCount || (app_result - p1).norm_eu() > radius){
 			cout << "Algorithm does not converge" << endl;
+			ofs.close();
+			p1 = V2( std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity());
+			ofs.open("xs.dat", ofstream::out);
 			break;
 		}
 	} while ((p0 - p1).norm_max() > eps);
@@ -126,7 +130,7 @@ V2 gradient_descent(const VecFun f, VecScal p0, double eps, size_t maxItCount){
 	return p1;
 }
 template<class VecFun, class VecScal>
-V2 find_root(VecFun f, VecScal p0, double eps){
+V2 find_root(VecFun f, VecScal p0, double eps, VecScal app_result, double radius, size_t maxItCount){
 	V2 p1 = p0;
 	V2 dp(0,0);
 	MF2 J = f.jacobian();
@@ -149,7 +153,13 @@ V2 find_root(VecFun f, VecScal p0, double eps){
 		p1.x = p0.x - A1.Det(p0) / J.Det(p0);
 		p1.y = p0.y - A2.Det(p0) / J.Det(p0);
 		ofs << p1.x << "\t" << p1.y << endl;
-		cout << p1.x << p1.y << endl;
+		if (i > maxItCount || (app_result - p1).norm_eu() > radius){
+			cout << "Algorithm does not converge" << endl;
+			ofs.close();
+			p1 = V2( std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity());
+			ofs.open("xs.dat", ofstream::out);
+			break;
+		}
 	}while((p0-p1).norm_max() > eps);
 	ofs.close();
 	return p1;
@@ -160,29 +170,39 @@ int main(int argc, const char *argv[])
 	F2 f;
 	f.f1 = [](V2 p) {return p.x*p.x + p.y*p.y -1 ;};
 	f.f2 = [](V2 p) {return p.y - p.x - 0.5 ;};
+	V2 app_result(0.4,0.9);
 	ofstream of("p0stats.dat");
 	double x=-0.1,y=0.5;
-	for (;x<0.8;x+=0.1){
+	for (;x<0.9;x+=0.1){
 		cout << "x = " << x << endl;
-		for (;y<1.2;y+=0.1) {
+		for (;y<1.3;y+=0.1) {
 			V2 p00(x,y);
-			V2 p0 = gradient_descent<F2,V2>(f, p00 , 0.01, 1000);
-			V2 result = find_root<F2,V2>(f,p0, 0.00001);
-			cout << result.x << ", " << result.y << endl;
-			of << endl << x << "\t" << y << "\t" << 0 << "\t" << 0 << "\t" << 0 << "\t" << endl;
-			of.close();
-			system("wc -l xs.dat | awk '{print $1}' >> p0stats.dat");
-			of.open("p0stats.dat",std::ostream::app);
+			V2 p0 = gradient_descent<F2,V2>(f, p00 , 0.01, app_result,1.0f, 1000);
+			if(numeric_limits<double>::infinity() != p0.x || numeric_limits<double>::infinity() != p0.y){
+				V2 result = find_root<F2,V2>(f,p0, 0.00001, app_result, 0.8,1000);
+				cout << result.x << ", " << result.y << endl;
+				of << endl << x << "\t" << y << "\t" << 0 << "\t" << 0 << "\t" << 0 << "\t" << endl;
+				of.close();
+				system("wc -l xs.dat | awk '{print $1}' >> p0stats.dat");
+				of.open("p0stats.dat",std::ostream::app);
 			}
-		y = 0.5;
+			else {
+				cout << "I know it does not converge here" << endl;
+				of << endl << x << "\t" << y << "\t" << 0 << "\t" << 0 << "\t" << 0 << "\t" << endl;
+				of << 0 << endl;
+			}
+		}
+		y = 0.3;
 	}
 	of.close();
 	double eps = 10e-02;
 	V2 p00(0.5,0.8);
 	ofstream ofe("epsstats.dat");
 	for(;eps > 10e-07;eps /= 10){
-		V2 p0 = gradient_descent<F2,V2>(f, p00 , eps, 1000);
-		V2 result = find_root<F2,V2>(f,p0, eps/100);
+		V2 p0 = gradient_descent<F2,V2>(f, p00 , eps, app_result,0.8,1000);
+			if(numeric_limits<double>::infinity() == p0.x || numeric_limits<double>::infinity() == p0.y){
+			V2 result = find_root<F2,V2>(f,p0, eps/100, app_result,0.8,1000);
+		}
 		ofe << eps << endl;
 		ofe.close();
 		system("wc -l xs.dat | awk '{print $1}' >> epsstats.dat");

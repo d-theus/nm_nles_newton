@@ -4,12 +4,23 @@ set title "Количество итераций в зависимости от 
 set isosamples 50
 set grid
 set xrange [-0.1:0.8]
+set xlabel 'X'
 set yrange [0.2:1.3]
+set ylabel 'Y'
 set zrange [-0.01:40]
+set ztics 8
 f(x,y) = x**2 + y**2 - 1
 g(x,y) = x - y + 0.5
-unset key
-set contour
+set contour base
 set cntrparam levels disc 0
 unset surface
-splot f(x,y), g(x,y), 'p0.dat' with vectors linecolor rgb 'red' lw 2 filled
+set style line 1 lc rgb 'blue' lw 2
+set style line 2 lc rgb 'orange' lw 2
+set style line 3 lc rgb 'blue' lw 2
+set style line 4 lc rgb 'blue' lw 2
+set style increment userstyle
+
+splot 		f(x,y) with lines t 'x^2 + y^2 - 1 = 0',\
+	  	g(x,y) with lines t 'x - y + 0.5 = 0',\
+		'p0ok.dat' with vectors linecolor rgb 'red' lw 1.5 t 'Iterations'
+set key default
