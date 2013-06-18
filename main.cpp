@@ -195,13 +195,14 @@ int main(int argc, const char *argv[])
 		y = 0.3;
 	}
 	of.close();
+	double eps_0 = 10e-02;
 	double eps = 10e-02;
 	V2 p00(0.5,0.8);
 	ofstream ofe("epsstats.dat");
-	for(;eps > 10e-07;eps /= 10){
-		V2 p0 = gradient_descent<F2,V2>(f, p00 , eps, app_result,0.8,1000);
-			if(numeric_limits<double>::infinity() == p0.x || numeric_limits<double>::infinity() == p0.y){
-			V2 result = find_root<F2,V2>(f,p0, eps/100, app_result,0.8,1000);
+	for(;eps > 10e-09;eps /= 10){
+		V2 p0 = gradient_descent<F2,V2>(f, p00 , eps_0, app_result,0.8,10e+05);
+			if(numeric_limits<double>::infinity() != p0.x || numeric_limits<double>::infinity() != p0.y){
+			V2 result = find_root<F2,V2>(f,p0, eps/100, app_result,0.8,10e+06);
 		}
 		ofe << eps << endl;
 		ofe.close();
