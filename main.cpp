@@ -209,6 +209,15 @@ int main(int argc, const char *argv[])
 		system("wc -l xs.dat | awk '{print $1}' >> epsstats.dat");
 		ofe.open("epsstats.dat",std::ostream::app);
 	}
+	cout << "Now testing gradient descent only  epsilon-iterations dependency" << endl;
+	ofe.open("epsstats_gd_only.dat");
+	for(eps = 10e-02;eps > 10e-09;eps /= 10){
+		V2 p0 = gradient_descent<F2,V2>(f, p00 , eps, app_result,0.8,10e+08);
+		ofe << eps/10 << endl;
+		ofe.close();
+		system("wc -l xs.dat | awk '{print $1}' >> epsstats_gd_only.dat");
+		ofe.open("epsstats_gd_only.dat",std::ostream::app);
+	}
 	ofe.close();
 	return 0;
 }
